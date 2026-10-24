@@ -1,4 +1,6 @@
-﻿using static Valve.VR.SteamVR_Actions;
+﻿using NomaiVR.Tools;
+using Valve.VR;
+using static Valve.VR.SteamVR_Actions;
 
 namespace NomaiVR.Input.ActionInputs
 {
@@ -97,19 +99,38 @@ namespace NomaiVR.Input.ActionInputs
         public static readonly BooleanActionInput UITabRight =
             new BooleanActionInput(action: _default.UITabRight, clickable: false);
 
-        public static readonly BooleanActionInput ToolUse =
-            new BooleanActionInput(action: tools.Use, eitherHand: true);
+        // Controllers with a grip click binding (Steam Frame) use the grip's click on the hand holding the tool.
+        // It's checked first so a tools/use binding can't shadow it. Other controllers fall back to tools/use.
+        public static readonly FallbackActionInput ToolUse = new FallbackActionInput(
+            new BooleanActionInput(action: _default.GripClick, optional: true, handSource: () => InteractingHandSource),
+            new BooleanActionInput(action: tools.Use, eitherHand: true));
 
-        public static readonly Vector2ActionInput ToolUp =
-            new Vector2ActionInput(action: tools.DPad, optional: true, yOnly: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "up");
+        // Ship scout and signalscope on the Steam Frame: the tools set is active on the left hand, shadowing its bumper,
+        // so the right bumper's secondary interact is used.
+        public static readonly BooleanActionInput ShipToolUse =
+            new BooleanActionInput(action: _default.SecondaryInteract, handSource: () => SteamVR_Input_Sources.RightHand);
 
-        public static readonly Vector2ActionInput ToolDown =
-            new Vector2ActionInput(action: tools.DPad, optional: true, yOnly: true, invert: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "down");
+        public static readonly FallbackActionInput ToolSecondary = new FallbackActionInput(
+            new BooleanActionInput(action: tools.Secondary, eitherHand: true, optional: true),
+            SecondaryInteract);
 
-        public static readonly Vector2ActionInput ToolLeft =
-            new Vector2ActionInput(action: tools.DPad, optional: true, invert: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "left");
+        public static readonly FallbackActionInput ToolUp = new FallbackActionInput(
+            new Vector2ActionInput(action: tools.DPad, optional: true, yOnly: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "up"),
+            new BooleanActionInput(action: tools.DPadUp, eitherHand: true, clickable: false, optional: true));
 
-        public static readonly Vector2ActionInput ToolRight =
-            new Vector2ActionInput(action: tools.DPad, optional: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "right");
+        public static readonly FallbackActionInput ToolDown = new FallbackActionInput(
+            new Vector2ActionInput(action: tools.DPad, optional: true, yOnly: true, invert: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "down"),
+            new BooleanActionInput(action: tools.DPadDown, eitherHand: true, clickable: false, optional: true));
+
+        public static readonly FallbackActionInput ToolLeft = new FallbackActionInput(
+            new Vector2ActionInput(action: tools.DPad, optional: true, invert: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "left"),
+            new BooleanActionInput(action: tools.DPadLeft, eitherHand: true, clickable: false, optional: true));
+
+        public static readonly FallbackActionInput ToolRight = new FallbackActionInput(
+            new Vector2ActionInput(action: tools.DPad, optional: true, clamp: true, yZero: true, eitherHand: true, textureModifier: "right"),
+            new BooleanActionInput(action: tools.DPadRight, eitherHand: true, clickable: false, optional: true));
+
+        private static SteamVR_Input_Sources InteractingHandSource =>
+            VRToolSwapper.InteractingHand != null ? VRToolSwapper.InteractingHand.InputSource : SteamVR_Input_Sources.Any;
     }
 }

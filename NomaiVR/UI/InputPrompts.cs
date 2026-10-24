@@ -3,6 +3,7 @@ using NomaiVR.Assets;
 using NomaiVR.Helpers;
 using NomaiVR.Input;
 using NomaiVR.Input.ActionInputs;
+using NomaiVR.Tools;
 using UnityEngine;
 using Valve.VR;
 
@@ -22,6 +23,7 @@ namespace NomaiVR.UI
             Index,
             Vive,
             Wmr,
+            SteamFrame,
             Generic
         }
 
@@ -55,6 +57,9 @@ namespace NomaiVR.UI
                 Logs.Write($"Registering for controller binding changes");
                 SteamVR_Actions._default.Grip.AddOnActiveBindingChangeListener((fromAction, fromSource, active) => ActiveDeviceChanged(fromAction), SteamVR_Input_Sources.Any);
                 SteamVR_Actions.tools.Use.AddOnActiveBindingChangeListener((fromAction, fromSource, active) => InvalidateButtonImages(), SteamVR_Input_Sources.Any);
+                // Controllers without a tools/use binding never fire the listener above, so also refresh when a tool is taken or put away.
+                VRToolSwapper.ToolEquipped += InvalidateButtonImages;
+                VRToolSwapper.UnEquipped += InvalidateButtonImages;
                 ActiveDeviceChanged(SteamVR_Actions._default.Grip);
             }
 
@@ -78,6 +83,9 @@ namespace NomaiVR.UI
                     case "holographic_controller":
                         Platform = ActiveVRPlatform.Wmr;
                         break;
+                    case "frame_controller":
+                        Platform = ActiveVRPlatform.SteamFrame;
+                        break;
                     case "<unknown>":
                         return;
                     default:
@@ -93,7 +101,7 @@ namespace NomaiVR.UI
                 }
             }
 
-            private static void InvalidateButtonImages()
+            internal static void InvalidateButtonImages()
             {
                 if (Manager == null) return;
                 Manager.OnButtonImagesChanged();

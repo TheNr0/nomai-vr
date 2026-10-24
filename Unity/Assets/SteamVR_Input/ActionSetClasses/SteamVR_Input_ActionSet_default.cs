@@ -248,5 +248,13 @@ namespace Valve.VR
                 return SteamVR_Actions.default_Haptic;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean GripClick
+        {
+            get
+            {
+                return SteamVR_Actions.default_GripClick;
+            }
+        }
     }
 }
