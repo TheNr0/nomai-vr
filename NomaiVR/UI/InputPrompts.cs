@@ -119,7 +119,8 @@ namespace NomaiVR.UI
                 {
                     Prefix<AbstractInputCommands<IVectorInputAction>>(nameof(AbstractInputCommands<IVectorInputAction>.GetUITextures), nameof(GetVruiTextures));
                     Prefix<AbstractInputCommands<IAxisInputAction>>(nameof(AbstractInputCommands<IAxisInputAction>.GetUITextures), nameof(GetVruiTextures));
-                    Prefix<CompositeInputCommands>(nameof(CompositeInputCommands.GetUITextures), nameof(GetVruiTextures));
+                    // CompositeInputCommands inherits GetUITextures, Harmony can only patch the declaring class.
+                    Prefix<AbstractCompositeInputCommands<IInputActionPair>>(nameof(AbstractCompositeInputCommands<IInputActionPair>.GetUITextures), nameof(GetVruiTextures));
                     Postfix<ScreenPromptElement>(nameof(ScreenPromptElement.BuildScreenPrompt), nameof(MakePromptsDrawOnTop));
                 }
 

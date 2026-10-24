@@ -98,7 +98,7 @@
     <EmbeddedResource Remove="Input\Bindings\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.16.1372" />
     <PackageReference Include="OWML" Version="2.1.0">
     </PackageReference>
   </ItemGroup>
