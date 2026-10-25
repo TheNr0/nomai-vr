@@ -118,6 +118,11 @@
       "type": "boolean"
     },
     {
+      "name": "/actions/default/in/GripClick",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     },
@@ -151,12 +156,37 @@
       "requirement": "optional"
     },
     {
-      "name": "/actions/default/in/GripClick",
+      "name": "/actions/tools/in/Secondary",
       "type": "boolean",
       "requirement": "optional"
     },
     {
-      "name": "/actions/tools/in/Secondary",
+      "name": "/actions/ship_tools/in/Use",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/ship_tools/in/Secondary",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/ship_tools/in/DPadUp",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/ship_tools/in/DPadDown",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/ship_tools/in/DPadLeft",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/ship_tools/in/DPadRight",
       "type": "boolean",
       "requirement": "optional"
     }
@@ -168,6 +198,10 @@
     },
     {
       "name": "/actions/tools",
+      "usage": "single"
+    },
+    {
+      "name": "/actions/ship_tools",
       "usage": "single"
     }
   ],
@@ -231,7 +265,13 @@
       "/actions/default/in/StationaryDpad": "Stationary Tool Dpad",
       "/actions/default/in/UITabLeft": "Tab Left (UI)",
       "/actions/default/in/UIDpad": "Dpad (UI)",
-      "/actions/default/in/SecondaryInteract": "Secondary Interact"
+      "/actions/default/in/SecondaryInteract": "Secondary Interact",
+      "/actions/ship_tools/in/Use": "Use (ship tools)",
+      "/actions/ship_tools/in/Secondary": "Secondary (ship tools)",
+      "/actions/ship_tools/in/DPadUp": "DPad Up (ship tools)",
+      "/actions/ship_tools/in/DPadDown": "DPad Down (ship tools)",
+      "/actions/ship_tools/in/DPadLeft": "DPad Left (ship tools)",
+      "/actions/ship_tools/in/DPadRight": "DPad Right (ship tools)"
     }
   ]
 }

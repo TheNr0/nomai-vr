@@ -1,9 +1,6 @@
 ﻿using NomaiVR.Assets;
 using NomaiVR.Hands;
-using NomaiVR.Helpers;
-using NomaiVR.UI;
 using UnityEngine;
-using Valve.VR;
 
 namespace NomaiVR.Ship
 {
@@ -15,45 +12,10 @@ namespace NomaiVR.Ship
         public class Behaviour : MonoBehaviour
         {
             private static Transform mapGridRenderer;
-            private bool isShipToolsetActive;
 
             internal void Awake()
             {
                 mapGridRenderer = FindObjectOfType<MapController>()._gridRenderer.transform;
-            }
-
-            // Only the Steam Frame bindings rely on the tools set for ship tools.
-            // Other controllers keep their default set cockpit bindings, which the tools set would shadow on the off hand.
-            internal static bool UsesShipToolset => ToolHelper.IsUsingAnyTool(ToolGroup.Ship)
-                                                    && InputPrompts.Instance != null
-                                                    && InputPrompts.Instance.Platform == InputPrompts.ActiveVRPlatform.SteamFrame;
-
-            internal void Update()
-            {
-                var shouldBeActive = UsesShipToolset;
-                if (shouldBeActive != isShipToolsetActive) SetShipToolsetActive(shouldBeActive);
-            }
-
-            internal void OnDestroy()
-            {
-                if (isShipToolsetActive) SetShipToolsetActive(false);
-            }
-
-            // While the ship scout or signalscope is active, the left d-pad gets the tool controls, whatever the dominant hand.
-            // It has no default set bindings on the Steam Frame, unlike the right hand's buttons (interact, back).
-            private void SetShipToolsetActive(bool active)
-            {
-                isShipToolsetActive = active;
-                if (active)
-                {
-                    SteamVR_Actions.tools.Activate(SteamVR_Input_Sources.LeftHand, 1);
-                }
-                else
-                {
-                    SteamVR_Actions.tools.Deactivate(SteamVR_Input_Sources.LeftHand);
-                    SteamVR_Actions.tools.Deactivate(SteamVR_Input_Sources.RightHand);
-                }
-                InputPrompts.Behaviour.InvalidateButtonImages();
             }
 
             public class Patch : NomaiVRPatch

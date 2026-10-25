@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using NomaiVR.Helpers;
 using NomaiVR.Input.ActionInputs;
-using NomaiVR.Ship;
 using NomaiVR.Tools;
 using Valve.VR;
 using static InputConsts;
@@ -68,7 +67,6 @@ namespace NomaiVR.Input
                 { InputCommandType.SIGNALSCOPE, ActionInputDefinitions.ToolUse },
                 { InputCommandType.SCOPEVIEW, ActionInputDefinitions.ToolUse },
                 { InputCommandType.TOOL_PRIMARY, ActionInputDefinitions.ToolUse },
-                { InputCommandType.TOOL_SECONDARY, ActionInputDefinitions.ToolSecondary },
                 { InputCommandType.TOOL_UP, ActionInputDefinitions.ToolUp },
                 { InputCommandType.TOOL_DOWN, ActionInputDefinitions.ToolDown },
                 { InputCommandType.TOOL_RIGHT, ActionInputDefinitions.ToolRight },
@@ -76,20 +74,6 @@ namespace NomaiVR.Input
                 { InputCommandType.INTERACT, ActionInputDefinitions.Empty },
             };
         
-        // Ship scout and signalscope while one of them is active in the cockpit.
-        public static readonly Dictionary<InputCommandType, IActionInput> ActiveShipToolsInputMap =
-            new Dictionary<InputCommandType, IActionInput>
-            {
-                { InputCommandType.PROBELAUNCH, ActionInputDefinitions.ShipToolUse },
-                { InputCommandType.PROBERETRIEVE, ActionInputDefinitions.ShipToolUse },
-                { InputCommandType.TOOL_PRIMARY, ActionInputDefinitions.ShipToolUse },
-                { InputCommandType.TOOL_SECONDARY, ActionInputDefinitions.ToolSecondary },
-                { InputCommandType.TOOL_UP, ActionInputDefinitions.ToolUp },
-                { InputCommandType.TOOL_DOWN, ActionInputDefinitions.ToolDown },
-                { InputCommandType.TOOL_RIGHT, ActionInputDefinitions.ToolRight },
-                { InputCommandType.TOOL_LEFT, ActionInputDefinitions.ToolLeft },
-            };
-
         public static readonly Dictionary<InputCommandType, IActionInput> ShipToolsInputMap =
             new Dictionary<InputCommandType, IActionInput>
             {
@@ -114,8 +98,6 @@ namespace NomaiVR.Input
         public static IActionInput GetActionInput(InputCommandType commandType)
         {
             var returnAction = TryGetActionInput(commandType);
-            if (returnAction is FallbackActionInput fallbackAction)
-                returnAction = fallbackAction.Current;
             if (returnAction != null && returnAction.Optional && !returnAction.Active) 
                 return ActionInputDefinitions.Empty;
             return returnAction;
@@ -123,9 +105,9 @@ namespace NomaiVR.Input
 
         private static IActionInput TryGetActionInput(InputCommandType commandType)
         {
-            if (ShouldUseActiveShipToolsMap && ActiveShipToolsInputMap.ContainsKey(commandType))
+            if (OptionalToolInputs.TryGetActionInput(commandType, out var optionalToolInput))
             {
-                return ActiveShipToolsInputMap[commandType];
+                return optionalToolInput;
             }
 
             if (ShouldUseShipToolsMap && ShipToolsInputMap.ContainsKey(commandType))
@@ -147,12 +129,8 @@ namespace NomaiVR.Input
             return actionInput;
         }
 
-        // The tools set is also active for ship tools, but those use ActiveShipToolsInputMap instead.
-        private static bool ShouldUseToolsMap => (SteamVR_Actions.tools.IsActive(SteamVR_Input_Sources.RightHand)
-                                        || SteamVR_Actions.tools.IsActive(SteamVR_Input_Sources.LeftHand))
-                                        && !ShouldUseActiveShipToolsMap;
-
-        private static bool ShouldUseActiveShipToolsMap => ShipTools.Behaviour.UsesShipToolset;
+        private static bool ShouldUseToolsMap => SteamVR_Actions.tools.IsActive(SteamVR_Input_Sources.RightHand)
+                                        || SteamVR_Actions.tools.IsActive(SteamVR_Input_Sources.LeftHand);
 
         private static bool ShouldUseShipToolsMap =>
             OWInput.IsInputMode(InputMode.ShipCockpit);

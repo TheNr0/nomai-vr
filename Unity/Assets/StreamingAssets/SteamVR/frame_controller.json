@@ -412,6 +412,68 @@
                "path": "/user/hand/right/input/bumper"
             }
          ]
+      },
+      "/actions/ship_tools": {
+         "chords": [],
+         "haptics": [],
+         "poses": [],
+         "skeleton": [],
+         "sources": [
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/dpadup"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/left/input/dpad_up"
+            },
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/dpaddown"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/left/input/dpad_down"
+            },
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/dpadleft"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/left/input/dpad_left"
+            },
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/dpadright"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/left/input/dpad_right"
+            },
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/secondary"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/left/input/bumper"
+            },
+            {
+               "inputs": {
+                  "click": {
+                     "output": "/actions/ship_tools/in/use"
+                  }
+               },
+               "mode": "button",
+               "path": "/user/hand/right/input/bumper"
+            }
+         ]
       }
    },
    "category": "steamvr_input",
